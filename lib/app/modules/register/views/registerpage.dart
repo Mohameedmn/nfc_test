@@ -1,0 +1,166 @@
+import 'package:firstgetxapp/app/widgets/CustomTextField.dart';
+import 'package:firstgetxapp/app/widgets/custombutton.dart';
+import 'package:firstgetxapp/app/widgets/djezzyappbar.dart';
+import 'package:firstgetxapp/app/modules/register/controllers/registercontroller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class RegisterView extends StatelessWidget {
+  RegisterView({super.key});
+  final registerController = Get.find<RegisterController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: const DjeezyAppBar(),
+        body: ListView(
+          children: [
+            const SizedBox(
+              height: 50,
+            ),
+            Card(
+              color: const Color.fromARGB(255, 255, 255, 255),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              margin: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Container(
+                    height: 10,
+                  ),
+                  const Text(
+                    'Welcome ',
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0)),
+                  ),
+                  Container(
+                    height: 30,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                'First Name',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            CustomTextField(
+                              label: 'First Name',
+                              hint: 'first name',
+                              controllerRx: registerController.firstname,
+                              obscureText: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                'Last Name',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            CustomTextField(
+                              label: 'Last Name',
+                              hint: 'last name',
+                              controllerRx: registerController.lastname,
+                              obscureText: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'PHONE NUMBER',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  CustomTextField(
+                    label: 'Phone Number',
+                    hint: 'Enter your phone number',
+                    controllerRx: registerController.phonenumber,
+                    obscureText: false,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'PASSWORD',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  CustomTextField(
+                    label: 'Password',
+                    hint: 'Enter your password',
+                    controllerRx: registerController.password,
+                    obscureText: true,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'CONFIRM PASSWORD',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  CustomTextField(
+                    label: 'Confirm Password',
+                    hint: 'Confirm your password',
+                    controllerRx: registerController.confirmPassword,
+                    obscureText: true,
+                  ),
+                  CustomButton(
+                    text: 'Login',
+                    onPressed: () {
+                      registerController.register();
+                    },
+                    color: Colors.red,
+                    width: 320,
+                  ),
+                  Container(
+                    height: 50,
+                  ),
+                ],
+              ),
+            ),
+            const Center(child: Text("You already have an account?")),
+            Center(
+                child: GestureDetector(
+              onTap: () {
+                Get.back(); // Replace with your actual page
+              },
+              child: const Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 255, 0, 0),
+                ),
+              ),
+            )),
+          ],
+        ));
+  }
+}
