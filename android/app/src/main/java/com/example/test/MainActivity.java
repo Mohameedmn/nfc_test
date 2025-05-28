@@ -161,6 +161,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 }
                 Toast.makeText(this, "Please tap your ID card to the NFC reader...", Toast.LENGTH_LONG).show();
                 break;
+            case "GetDate":
+                // Example method to return the current date
+                result.success(System.currentTimeMillis());
+                break;
             default:
                 result.notImplemented();
                 break;
