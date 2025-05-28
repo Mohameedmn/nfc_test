@@ -1,4 +1,4 @@
-package com.example.nfc;
+package com.example.test;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcA;
 import android.nfc.tech.NfcB;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
@@ -116,7 +117,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         switch (call.method) {
             case "startMRZScan":
                 if (!allPermissionsGranted()) {
-                    result.error("CAMERA_PERMISSION_DENIED", "Camera permission is required to scan MRZ.", null);
+                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+                    result.success("REQUESTING_PERMISSIONS");
                     return;
                 }
                 if (ocrResultCallback != null) {
@@ -132,7 +134,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             case "readNfc":
                 if (!allPermissionsGranted()) {
-                    result.error("NFC_PERMISSION_DENIED", "NFC permission is required to read card.", null);
+                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+                    result.success("REQUESTING_PERMISSIONS");
                     return;
                 }
                 if (nfcResultCallback != null) {
@@ -211,6 +214,18 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
+                Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permissions must be granted to use this feature", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     // --- OCR/Camera Methods ---
     private void startCameraForMRZ() {
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
@@ -249,9 +264,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
 
-        imageAnalysis.setAnalyzer(cameraExecutor, imageProxy -> {
-            processImageProxy(imageProxy);
-        });
+        imageAnalysis.setAnalyzer(cameraExecutor, this::processImageProxy);
 
         cameraProvider.unbindAll();
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, imageAnalysis);
@@ -340,7 +353,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     private void handleNfcIntent(Intent intent) {
         if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            Tag tag;
+            // Fix deprecation for getParcelableExtra on API 33+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG, Tag.class);
+            } else {
+                tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            }
+            
             if (tag != null) {
                 String[] techList = tag.getTechList();
                 boolean isIsoDepSupported = false;
@@ -505,7 +525,16 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     private void setupNfcForegroundDispatch(Context context, NfcAdapter nfcAdapter) {
         Intent intent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        android.app.PendingIntent pendingIntent = android.app.PendingIntent.getActivity(context, 0, intent, android.app.PendingIntent.FLAG_MUTABLE);
+        
+        // Fix deprecation: Use proper flags based on API level
+        int flags;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flags = android.app.PendingIntent.FLAG_MUTABLE;
+        } else {
+            flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+        
+        android.app.PendingIntent pendingIntent = android.app.PendingIntent.getActivity(context, 0, intent, flags);
         String[][] techLists = new String[][]{
                 new String[]{IsoDep.class.getName()},
                 new String[]{NfcA.class.getName()},

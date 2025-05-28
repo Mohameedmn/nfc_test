@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
@@ -134,4 +134,3 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class NativeCode {}
