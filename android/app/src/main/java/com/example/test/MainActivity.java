@@ -445,7 +445,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             nfcDataMap.put("issuingState", dg1File.getMRZInfo().getIssuingState());
             nfcDataMap.put("nationality", dg1File.getMRZInfo().getNationality());
             nfcDataMap.put("dateOfBirth", dg1File.getMRZInfo().getDateOfBirth());
-            nfcDataMap.put("gender", dg1File.getMRZInfo().getGender());
+            nfcDataMap.put("gender", dg1File.getMRZInfo().getGender().name());
             nfcDataMap.put("dateOfExpiry", dg1File.getMRZInfo().getDateOfExpiry());
             nfcDataMap.put("primaryIdentifier", dg1File.getMRZInfo().getPrimaryIdentifier().replace("<", ""));
             nfcDataMap.put("secondaryIdentifier", dg1File.getMRZInfo().getSecondaryIdentifier().replace("<", ""));
@@ -466,7 +466,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 nfcDataMap.put("fullName", "N/A");
             }
 
-            result.success(true);
+            result.success(nfcDataMap);
 
         } catch (Exception e) {
             Log.e(TAG, "NFC read error: " + e.getMessage(), e);

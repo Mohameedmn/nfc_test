@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiConfig {
-  static const String baseUrl = 'http://127.0.0.1:8000/api'; // change for real device
+  static const String baseUrl = 'http://10.0.2.2:8000/api'; // change for real device
   static const String face_id_url ='';
   static const FlutterSecureStorage storage = FlutterSecureStorage();
 

@@ -1,10 +1,13 @@
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class SelfieCNIController extends GetxController {
   late CameraController cameraController;
   var isCameraInitialized = false.obs;
   var capturedImage = Rxn<XFile>();
+
+  static const platform = MethodChannel('com.example.nfcreaderapp/passport_reader');
 
   @override
   void onInit() {
@@ -33,6 +36,17 @@ class SelfieCNIController extends GetxController {
     if (!cameraController.value.isTakingPicture) {
       final picture = await cameraController.takePicture();
       capturedImage.value = picture;
+    }
+  }
+
+  /// Calls the native Android function to scan MRZ via method channel
+  Future<String?> scanMrz() async {
+    try {
+      final result = await platform.invokeMethod<String>('scanMrz');
+      return result;
+    } on PlatformException catch (e) {
+      print('Failed to scan MRZ: ${e.message}');
+      return null;
     }
   }
 
