@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Djezzy App',
       debugShowCheckedModeBanner: false,
-      initialRoute: AppPages.INITIAL,       
-      getPages: AppPages.routes,            
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
       theme: ThemeData(
         fontFamily: 'Poppins',
       ), // Define the routes
