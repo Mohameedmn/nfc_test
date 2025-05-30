@@ -1,4 +1,4 @@
-import 'package:firstgetxapp/app/routes/app_pages.dart';
+import 'package:firstgetxapp/app/routes/app_routes.dart';
 import 'package:firstgetxapp/app/widgets/CustomTextField.dart';
 import 'package:firstgetxapp/app/widgets/custombutton.dart';
 import 'package:firstgetxapp/app/widgets/djezzyappbar.dart';

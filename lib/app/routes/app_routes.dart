@@ -6,11 +6,11 @@ class Routes {
   static const HOME = '/home';
   static const step1 = '/step1';
   static const step2 = '/step2';
-  static const step3 = '/step3';  
+  static const step3 = '/step3';
   static const FORFAIT = '/forfait';
-  static const SELFIE = '/selfie'; 
-  static const selfie_CNI = '/selfie-CNI'; 
-  static const selfie_FACEID = '/selfie-FACEID'; 
+  static const SELFIE = '/selfie';
+  static const selfie_CNI = '/selfie-CNI';
+  static const selfie_FACEID = '/selfie-FACEID';
   static const recap = '/recap';
   static const selfie_compare = '/selfie-compare';
   static const LOGIN = '/login';
@@ -22,6 +22,10 @@ class Routes {
   static const WELCOME = '/welcome';
   static const INFOS = '/infos';
   static const PURCHASE_REQUEST = '/purchase-request';
+  
 
-  // Add more routes here as needed
+  static const step1mrz = '/step1mrz';
+  static const step2nfc = '/step2nfc';
+
+// Add more routes here as needed
 }

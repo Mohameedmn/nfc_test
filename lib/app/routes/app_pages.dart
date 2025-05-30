@@ -6,6 +6,7 @@ import 'package:firstgetxapp/app/modules/home/bindings/main_bindings.dart';
 import 'package:firstgetxapp/app/modules/home/views/MainView.dart';
 import 'package:firstgetxapp/app/modules/infos/bindings/infos_binding.dart';
 import 'package:firstgetxapp/app/modules/infos/views/infos_view.dart';
+import 'package:firstgetxapp/app/modules/selfie/bindings/faceCompare_binding.dart';
 import 'package:firstgetxapp/app/modules/selfie/bindings/selfie_CNI_binding.dart';
 import 'package:firstgetxapp/app/modules/selfie/bindings/selfie_FACEIDB_binding.dart';
 import 'package:firstgetxapp/app/modules/selfie/views/compare_view.dart';
@@ -18,12 +19,9 @@ import 'package:firstgetxapp/app/modules/stepper/bindings/stepper_binding.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/step1_view.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/step2_view.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/step3_view.dart';
-
 import 'package:firstgetxapp/app/modules/forfait/bindings/forfait_binding.dart';
 import 'package:firstgetxapp/app/modules/forfait/views/forfait_view.dart';
 import 'package:firstgetxapp/app/modules/selfie/views/CNI_view1.dart';
-import 'package:firstgetxapp/app/modules/selfie/bindings/faceCompare_binding.dart';
-
 import 'package:firstgetxapp/app/modules/passwordrecovery/bindings/passwordrecoverybinding.dart';
 import 'package:firstgetxapp/app/modules/passwordrecovery/views/passwordrecoveryview1.dart';
 import 'package:firstgetxapp/app/modules/register/bindings/registerbinding.dart';
@@ -32,6 +30,12 @@ import 'package:firstgetxapp/app/modules/welcome/bindings/welcomebinding.dart';
 import 'package:firstgetxapp/app/modules/welcome/views/welcomeview.dart';
 import 'package:firstgetxapp/app/modules/login/bindings/loginbinding.dart';
 import 'package:firstgetxapp/app/modules/login/views/loginpage.dart'; // Make sure to import your LoginView
+import 'package:firstgetxapp/app/routes/app_routes.dart'; // Import your routes file// Import your routes file
+
+
+import 'package:firstgetxapp/app/modules/stepper/views/step1mrz.dart';
+import 'package:firstgetxapp/app/modules/stepper/views/step2nfc.dart';
+// Make sure to import your LoginView
 
 class AppPages {
   static const INITIAL = Routes.step1; // Define the initial route
@@ -78,16 +82,20 @@ class AppPages {
       page: () => const CniView1(),
       binding: SelfieCNIBinding(),
     ),
+    
     GetPage(
       name: Routes.selfie_FACEID,
       page: () => const testView1(),
       binding: SelfieFACEIDBinding(),
     ),
+    
+    
     GetPage(
       name: Routes.selfie_compare,
       page: () => CompareView(),
       binding: FaceCompareBinding(),
     ),
+    
     GetPage(
       name: Routes
           .LOGIN, // Correct the route name here to match your actual route name
@@ -109,6 +117,7 @@ class AppPages {
       page: () => Welcomeview(),
       binding: WelcomeBinding(),
     ),
+    
     GetPage(
       name: Routes.INFOS,
       page: () => InfosView(),
@@ -119,35 +128,25 @@ class AppPages {
       page: () => PurchaseRequestView(),
       binding: PurchaseRequestBinding(),
     ),
+    /*
     GetPage(
       name: Routes.HELP,
       page: () => const HelpView(),
       binding: HelpBindings(),
     ),
+    */
 
+    GetPage(
+      name: '/step1mrz',
+      page: () => const Step1MRZView(),
+    ),
+    GetPage(
+      name: '/step2nfc',
+      page: () => const Step2NFCView(),
+    ),
 
 
 
   ];
 }
 
-class Routes {
-  static const MAIN = '/main'; // Define your route names here
-  static const HOME = '/home'; // Define your route names here
-  static const LOGIN = '/login';
-  static const REGISTER = '/register';
-  static const RECOVER = '/recover';
-  static const WELCOME = '/welcome';
-  static const step1 = '/step1';
-  static const step2 = '/step2';
-  static const step3 = '/step3';
-  static const FORFAIT = '/forfait';
-  static const selfie_CNI = '/selfie-CNI';
-  static const selfie_FACEID = '/selfie-FACEID';
-  static const recap = '/recap';
-  static const selfie_compare = '/selfie-compare';
-  static const INFOS = '/infos';
-  static const PURCHASE_REQUEST = '/purchase-request';
-  static const HELP = '/help';
-
-}
