@@ -39,50 +39,6 @@ class RegisterView extends StatelessWidget {
                   Container(
                     height: 30,
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                'First Name',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            CustomTextField(
-                              label: 'First Name',
-                              hint: 'first name',
-                              controllerRx: registerController.firstname,
-                              obscureText: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                'Last Name',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            CustomTextField(
-                              label: 'Last Name',
-                              hint: 'last name',
-                              controllerRx: registerController.lastname,
-                              obscureText: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(

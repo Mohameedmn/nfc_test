@@ -1,4 +1,4 @@
-import 'package:firstgetxapp/app/modules/offer/controller/offer_controller.dart';
+import 'package:firstgetxapp/app/modules/forfait/controllers/forfait_controller.dart';
 import 'package:firstgetxapp/app/modules/profil/controller/profile_controller.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/step1_view.dart';
 import 'package:firstgetxapp/app/modules/subscriber/controller/subscriber_controller.dart';
@@ -13,7 +13,7 @@ class HomeView extends StatelessWidget {
   HomeView({super.key});
 
   final subscriberController = Get.find<SubscriberController>();
-  final offerController = Get.find<OfferController>();
+  final offerController = Get.find<ForfaitController>();
   final virtualSimController = Get.find<VirtualSimController>();
   final profileController = Get.find<ProfileController>();
 

@@ -87,15 +87,22 @@ class FaqView extends StatelessWidget {
   }
 
   Widget _buildFaqTile(faq) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: ListTile(
-        title: Text(faq.question),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        onTap: () {
-          // show answer or navigate to detail
-        },
-      ),
-    );
-  }
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 4),
+    child: ExpansionTile(
+      title: Text(faq.question),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            faq.answer,
+            style: const TextStyle(color: Colors.grey),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }

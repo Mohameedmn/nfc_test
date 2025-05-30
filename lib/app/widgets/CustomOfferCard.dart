@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomOfferCard extends StatelessWidget {
   final String name;
@@ -22,7 +23,8 @@ class CustomOfferCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity, // ✅ Make it responsive
-      margin: const EdgeInsets.symmetric(vertical: 8), // ✅ No horizontal overflow
+      margin:
+          const EdgeInsets.symmetric(vertical: 8), // ✅ No horizontal overflow
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -42,7 +44,8 @@ class CustomOfferCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded( // ✅ Prevent text from overflowing
+              Expanded(
+                // ✅ Prevent text from overflowing
                 child: Text(
                   name,
                   style: const TextStyle(
@@ -121,8 +124,7 @@ class CustomOfferCard extends StatelessWidget {
                           text: 'illimité ',
                           style: TextStyle(color: Colors.black)),
                       TextSpan(
-                          text: 'YouTube',
-                          style: TextStyle(color: Colors.red)),
+                          text: 'YouTube', style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -159,7 +161,20 @@ class CustomOfferCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final url = Uri.parse(
+                    'https://djezzy.page.link/redirection?parent_fragment=home_fragment');
+
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } else {
+                  // Optionally show an error if the link can't be opened
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("Could not launch Djezzy app")),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -167,7 +182,8 @@ class CustomOfferCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: const Text("Acheter", style: TextStyle(fontSize: 16,color: Colors.white)),
+              child: const Text("Acheter",
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           )
         ],

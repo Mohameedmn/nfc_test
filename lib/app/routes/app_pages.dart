@@ -34,7 +34,7 @@ import 'package:firstgetxapp/app/modules/login/bindings/loginbinding.dart';
 import 'package:firstgetxapp/app/modules/login/views/loginpage.dart'; // Make sure to import your LoginView
 
 class AppPages {
-  static const INITIAL = Routes.step1; // Define the initial route
+  static const INITIAL = Routes.WELCOME; // Define the initial route
 
   static final routes = [
 
@@ -121,7 +121,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.HELP,
-      page: () => const HelpView(),
+      page: () => HelpView(),
       binding: HelpBindings(),
     ),
 

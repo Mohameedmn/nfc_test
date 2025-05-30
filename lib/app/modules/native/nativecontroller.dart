@@ -1,31 +1,29 @@
 import 'package:flutter/services.dart';
 
-class NativeController {
-  static const MethodChannel _channel = MethodChannel('com.example.myapp/native');
+class NativePassportReaderService {
+  static const MethodChannel _channel = MethodChannel('com.example.nfcreaderapp/passport_reader');
 
-  Future<String?> startMRZScan() async {
-    try {
-      final result = await _channel.invokeMethod<String>('startMRZScan');
-      return result;
-    } on PlatformException catch (e) {
-      return 'Error: ${e.message}';
+  Future<Map<String, dynamic>?> startMRZScan() async {
+    final result = await _channel.invokeMethod('startMRZScan');
+    if (result is Map) {
+      return Map<String, dynamic>.from(result);
     }
+    return null;
   }
 
-  Future<void> stopMRZScan() async {
-    try {
-      await _channel.invokeMethod('stopMRZScan');
-    } on PlatformException catch (e) {
-      print('Error stopping MRZ scan: ${e.message}');
+  Future<Map<String, dynamic>?> readNfc({
+    required String documentNumber,
+    required String dateOfBirth,
+    required String expirationDate,
+  }) async {
+    final result = await _channel.invokeMethod('readNfc', {
+      'documentNumber': documentNumber,
+      'dateOfBirth': dateOfBirth,
+      'expirationDate': expirationDate,
+    });
+    if (result is Map) {
+      return Map<String, dynamic>.from(result);
     }
-  }
-
-  Future<String?> readNfc() async {
-    try {
-      final result = await _channel.invokeMethod<String>('readNFC');
-      return result;
-    } on PlatformException catch (e) {
-      return 'Error: ${e.message}';
-    }
+    return null;
   }
 }

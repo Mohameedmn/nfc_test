@@ -78,8 +78,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private MethodChannel channel;
 
     // OCR related fields
-    private static final Pattern line1Pattern = Pattern.compile("([A|C|I][A-Z0-9<]{1})([A-Z]{3})([A-Z0-9<]{9})([0-9]{1})([A-Z0-9<]{15})");
-    private static final Pattern line2Pattern = Pattern.compile("([0-9]{6})([0-9]{1})([M|F|X|<]{1})([0-9]{6})([0-9]{1})([A-Z]{3})([A-Z0-9<]{11})([0-9]{1})");
+    private static final Pattern line1Pattern = Pattern
+            .compile("([A|C|I][A-Z0-9<]{1})([A-Z]{3})([A-Z0-9<]{9})([0-9]{1})([A-Z0-9<]{15})");
+    private static final Pattern line2Pattern = Pattern
+            .compile("([0-9]{6})([0-9]{1})([M|F|X|<]{1})([0-9]{6})([0-9]{1})([A-Z]{3})([A-Z0-9<]{11})([0-9]{1})");
     private static final String TAG = "PassportReaderNative";
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -101,9 +103,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private String nfcExpirationDate;
 
     // Permissions
-    private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.NFC};
+    private final String[] REQUIRED_PERMISSIONS = new String[] { Manifest.permission.CAMERA, Manifest.permission.NFC };
     private static final int REQUEST_CODE_PERMISSIONS = 10;
-
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -161,10 +162,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 }
                 Toast.makeText(this, "Please tap your ID card to the NFC reader...", Toast.LENGTH_LONG).show();
                 break;
-            case "GetDate":
-                // Example method to return the current date
-                result.success(System.currentTimeMillis());
-                break;
             default:
                 result.notImplemented();
                 break;
@@ -219,7 +216,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
@@ -240,7 +238,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error starting camera for MRZ: " + e.getMessage());
                 if (ocrResultCallback != null) {
-                    ocrResultCallback.error("CAMERA_INIT_FAILED", "Failed to initialize camera: " + e.getLocalizedMessage(), null);
+                    ocrResultCallback.error("CAMERA_INIT_FAILED",
+                            "Failed to initialize camera: " + e.getLocalizedMessage(), null);
                     ocrResultCallback = null;
                 }
             }
@@ -281,7 +280,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             return;
         }
 
-        InputImage image = InputImage.fromMediaImage(imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees());
+        InputImage image = InputImage.fromMediaImage(imageProxy.getImage(),
+                imageProxy.getImageInfo().getRotationDegrees());
 
         textRecognizer.process(image)
                 .addOnSuccessListener(text -> {
@@ -326,7 +326,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     private void parseMRZAndReturn(String line1, String line2) {
-        if (ocrResultCallback == null) return;
+        if (ocrResultCallback == null)
+            return;
 
         Map<String, String> mrzData = new HashMap<>();
         try {
@@ -356,7 +357,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     private void handleNfcIntent(Intent intent) {
-        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
+                || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Tag tag;
             // Fix deprecation for getParcelableExtra on API 33+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -364,7 +366,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             } else {
                 tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             }
-            
+
             if (tag != null) {
                 String[] techList = tag.getTechList();
                 boolean isIsoDepSupported = false;
@@ -383,7 +385,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                         String expirationDate = nfcExpirationDate;
 
                         if (documentNumber == null || dateOfBirth == null || expirationDate == null) {
-                            nfcResultCallback.error("MRZ_DATA_MISSING", "MRZ data (docNumber, DOB, Expiry) not provided or lost for NFC scan.", null);
+                            nfcResultCallback.error("MRZ_DATA_MISSING",
+                                    "MRZ data (docNumber, DOB, Expiry) not provided or lost for NFC scan.", null);
                             nfcResultCallback = null;
                             clearNfcMrzData(); // Clear the data if invalid
                             return;
@@ -399,7 +402,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                     }
                 } else {
                     if (nfcResultCallback != null) {
-                        nfcResultCallback.error("UNSUPPORTED_NFC_TAG", "Tag does not support IsoDep (not an eMRTD).", null);
+                        nfcResultCallback.error("UNSUPPORTED_NFC_TAG", "Tag does not support IsoDep (not an eMRTD).",
+                                null);
                         nfcResultCallback = null;
                         clearNfcMrzData();
                     } else {
@@ -410,7 +414,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
     }
 
-    private void readNfcTag(Tag tag, String documentNumber, String dateOfBirth, String expirationDate, MethodChannel.Result result) {
+    private void readNfcTag(Tag tag, String documentNumber, String dateOfBirth, String expirationDate,
+            MethodChannel.Result result) {
         IsoDep isoDep = null;
         PassportService ps = null;
         Map<String, Object> nfcDataMap = new HashMap<>();
@@ -424,7 +429,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
             CardService cardService = CardService.getInstance(isoDep);
             cardService.open();
-            ps = new PassportService(cardService, PassportService.NORMAL_MAX_TRANCEIVE_LENGTH, PassportService.DEFAULT_MAX_BLOCKSIZE, true, false);
+            ps = new PassportService(cardService, PassportService.NORMAL_MAX_TRANCEIVE_LENGTH,
+                    PassportService.DEFAULT_MAX_BLOCKSIZE, true, false);
             ps.open();
 
             BACKey bacKey = new BACKey(documentNumber, dateOfBirth, expirationDate);
@@ -484,12 +490,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     private Boolean checkBACKEY(BACKey bacKey, PassportService service) {
         try {
-            CardSecurityFile cardSecurityFile = new CardSecurityFile(service.getInputStream(PassportService.EF_CARD_SECURITY));
+            CardSecurityFile cardSecurityFile = new CardSecurityFile(
+                    service.getInputStream(PassportService.EF_CARD_SECURITY));
             Collection<SecurityInfo> securityInfoCollection = cardSecurityFile.getSecurityInfos();
             for (SecurityInfo securityInfo : securityInfoCollection) {
                 if (securityInfo instanceof PACEInfo) {
                     PACEInfo paceInfo = (PACEInfo) securityInfo;
-                    service.doPACE(bacKey, paceInfo.getObjectIdentifier(), PACEInfo.toParameterSpec(paceInfo.getParameterId()), null);
+                    service.doPACE(bacKey, paceInfo.getObjectIdentifier(),
+                            PACEInfo.toParameterSpec(paceInfo.getParameterId()), null);
                     return true;
                 }
             }
@@ -529,7 +537,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     private void setupNfcForegroundDispatch(Context context, NfcAdapter nfcAdapter) {
         Intent intent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        
+
         // Fix deprecation: Use proper flags based on API level
         int flags;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -537,12 +545,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         } else {
             flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT;
         }
-        
+
         android.app.PendingIntent pendingIntent = android.app.PendingIntent.getActivity(context, 0, intent, flags);
-        String[][] techLists = new String[][]{
-                new String[]{IsoDep.class.getName()},
-                new String[]{NfcA.class.getName()},
-                new String[]{NfcB.class.getName()}
+        String[][] techLists = new String[][] {
+                new String[] { IsoDep.class.getName() },
+                new String[] { NfcA.class.getName() },
+                new String[] { NfcB.class.getName() }
         };
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, techLists);
     }

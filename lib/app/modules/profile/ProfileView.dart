@@ -75,7 +75,7 @@ class ProfileView extends StatelessWidget {
                   QuickAccessTile(
                     icon: Icons.headset_mic,
                     label: "Help & Support",
-                    onTap: () => Get.to(const HelpView()),
+                    onTap: () => Get.to(HelpView()),
                   ),
                   QuickAccessTile(
                     icon: Icons.settings,

@@ -2,8 +2,10 @@ import 'package:firstgetxapp/app/modules/help/controller/help_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HelpView extends GetView<HelpController> {
-  const HelpView({super.key});
+class HelpView extends StatelessWidget {
+   HelpView({super.key});
+
+    final controller = Get.find<HelpController>();
 
   @override
   Widget build(BuildContext context) {
