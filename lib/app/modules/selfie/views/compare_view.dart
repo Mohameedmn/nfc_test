@@ -1,67 +1,77 @@
-import 'package:firstgetxapp/app/modules/selfie/controllers/compare_controller.dart';
-import 'package:firstgetxapp/app/modules/selfie/controllers/selfie_CNI_controller.dart';
-import 'package:firstgetxapp/app/modules/selfie/controllers/selfie_controller.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
 
-class CompareView extends StatelessWidget {
-  final FaceCompareController compareController = Get.put(FaceCompareController());
-  final SelfieCNIController cniController = Get.find();
-  final SelfieController faceIDController = Get.find();
+class UploadScreen extends StatelessWidget {
+  const UploadScreen({super.key});
 
-   CompareView({super.key});
+  // Helper to load asset and write it to a temporary file
+  Future<File> getAssetFile(String assetPath, String filename) async {
+    final byteData = await rootBundle.load(assetPath);
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/$filename');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return file;
+  }
+
+  Future<void> sendImageAndVideo() async {
+    final uri = Uri.parse('http://192.168.1.71:5000/verify');
+
+    try {
+      // Copy image and video assets to temporary files
+      final imageFile = await getAssetFile(
+          'assets/images/test/phototest.jpg', 'phototest.jpg');
+      final videoFile = await getAssetFile(
+          'assets/images/test/videotest.mp4', 'videotest.mp4');
+
+      // Create multipart request
+      var request = http.MultipartRequest('POST', uri);
+
+      // Add image
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'photo_nfc',
+          imageFile.path,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      );
+
+      // Add video
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'video_face',
+          videoFile.path,
+          contentType: MediaType('video', 'mp4'),
+        ),
+      );
+
+      // Send request
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        final respStr = await response.stream.bytesToString();
+        print("✅ Success: $respStr");
+      } else {
+        print("❌ Failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("⚠️ Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Compare Face and ID')),
-      body: Obx(() {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (cniController.capturedImage.value != null)
-                Text("Image: ${cniController.capturedImage.value!.name}"),
-              if (faceIDController.capturedImage.value != null)
-                Text("Video: ${faceIDController.capturedImage.value!.name}"),
-
-              const SizedBox(height: 24),
-
-              ElevatedButton(
-                onPressed: compareController.isLoading.value
-                    ? null
-                    : () async {
-                        if (cniController.capturedImage.value == null ||
-                            faceIDController.capturedImage.value == null) {
-                          Get.snackbar("Missing", "Make sure both image and video are captured.");
-                          return;
-                        }
-                        await compareController.compareVideoAndImage();
-                      },
-                child: compareController.isLoading.value
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Compare"),
-              ),
-
-              const SizedBox(height: 24),
-
-              if (compareController.matchResult.value != null)
-                Text(
-                  compareController.matchResult.value!
-                      ? "Matched ✅"
-                      : "Not Matched ❌",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: compareController.matchResult.value! ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-            ],
-          ),
-        );
-      }),
+      appBar: AppBar(title: const Text("Face ID Upload")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: sendImageAndVideo,
+          child: const Text("Send Image & Video"),
+        ),
+      ),
     );
   }
 }

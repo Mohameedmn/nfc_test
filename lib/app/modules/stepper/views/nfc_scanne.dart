@@ -3,6 +3,7 @@ import 'package:firstgetxapp/app/widgets/custombutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../controllers/stepper_controller.dart';
 
 class NfcScanneView extends StatefulWidget {
   final String documentNumber;
@@ -23,6 +24,8 @@ class NfcScanneView extends StatefulWidget {
 class _NfcScanneViewState extends State<NfcScanneView> {
   static const platform = MethodChannel('com.example.nfcreaderapp/passport_reader');
 
+  final StepperController _stepperController = Get.find<StepperController>();
+
   String _statusMessage = "Placez votre carte d'identité biométrique au dos de votre téléphone pour lire les données NFC.";
   Uint8List? _faceImage;
   Map<String, dynamic>? _nfcData;
@@ -40,58 +43,78 @@ class _NfcScanneViewState extends State<NfcScanneView> {
       _statusMessage = "Lecture NFC en cours... veuillez garder la carte sur votre téléphone.";
     });
 
-    try {
-      final dynamic result = await platform.invokeMethod('readNfc', {
-        'documentNumber': widget.documentNumber,
-        'dateOfBirth': widget.dateOfBirth,
-        'expirationDate': widget.expirationDate,
-      });
+    bool success = false;
 
-      if (result is Map) {
-        final Map<String, dynamic> nfcData = Map<String, dynamic>.from(result);
+    while (!success && mounted) {
+      try {
+        final dynamic result = await platform.invokeMethod('readNfc', {
+          'documentNumber': widget.documentNumber,
+          'dateOfBirth': widget.dateOfBirth,
+          'expirationDate': widget.expirationDate,
+        });
 
-        // Fix gender field if necessary
-        var genderRaw = nfcData['gender'];
-        if (genderRaw != null) {
-          if (genderRaw is String) {
-            nfcData['gender'] = genderRaw;
+        if (result is Map) {
+          final Map<String, dynamic> nfcData = Map<String, dynamic>.from(result);
+
+          // Fix gender field
+          var genderRaw = nfcData['gender'];
+          if (genderRaw != null) {
+            if (genderRaw is String) {
+              nfcData['gender'] = genderRaw;
+            } else {
+              nfcData['gender'] = genderRaw.toString().split('.').last;
+            }
           } else {
-            nfcData['gender'] = genderRaw.toString().split('.').last;
+            nfcData['gender'] = "N/A";
           }
-        } else {
-          nfcData['gender'] = "N/A";
-        }
 
-        setState(() {
-          _nfcData = nfcData;
-          _statusMessage = "✅ Lecture NFC réussie ! Voici les détails :";
-
+          Uint8List? faceImage;
           if (nfcData['faceImage'] != null && nfcData['faceImage'] is List<dynamic>) {
             final List<dynamic> bytesList = nfcData['faceImage'];
-            _faceImage = Uint8List.fromList(bytesList.cast<int>());
-          } else {
-            _faceImage = null;
+            faceImage = Uint8List.fromList(bytesList.cast<int>());
           }
-        });
-      } else {
+
+          if (faceImage != null) {
+            // Store data and image in controller
+            _stepperController.setNfcData(nfcData, faceImage);
+
+            setState(() {
+              _nfcData = nfcData;
+              _faceImage = faceImage;
+              _statusMessage = "✅ Lecture NFC réussie !";
+              _isReading = false;
+            });
+            success = true;
+            break;
+          } else {
+            setState(() {
+              _statusMessage = "🔄 Lecture réussie mais image manquante. Nouvelle tentative...";
+            });
+          }
+        } else {
+          setState(() {
+            _statusMessage = "⚠️ Résultat inattendu : $result. Nouvelle tentative...";
+          });
+        }
+      } on PlatformException catch (e) {
         setState(() {
-          _statusMessage = "⚠️ Résultat inattendu lors de la lecture NFC : $result";
+          _statusMessage = "❌ Erreur plateforme : ${e.message}. Nouvelle tentative...";
         });
+        print("PlatformException: ${e.message}");
+      } catch (e, stackTrace) {
+        setState(() {
+          _statusMessage = "❌ Erreur inconnue : $e. Nouvelle tentative...";
+        });
+        print("Exception: $e\nStackTrace: $stackTrace");
       }
-    } on PlatformException catch (e) {
-      setState(() {
-        _statusMessage = "❌ Erreur plateforme lors de la lecture NFC : ${e.message}";
-      });
-      print("PlatformException during NFC read: ${e.message}");
-    } catch (e, stackTrace) {
-      setState(() {
-        _statusMessage = "❌ Erreur lors de la lecture NFC : $e";
-      });
-      print("NFC Exception: $e");
-      print("StackTrace: $stackTrace");
-    } finally {
+
+      await Future.delayed(const Duration(seconds: 2));
+    }
+
+    if (!success && mounted) {
       setState(() {
         _isReading = false;
+        _statusMessage = "Échec après plusieurs tentatives.";
       });
     }
   }
@@ -132,8 +155,6 @@ class _NfcScanneViewState extends State<NfcScanneView> {
                 textAlign: TextAlign.center,
               ),
 
-
-              //image
               Image.asset(
                 'assets/images/nfc_scanner.png',
                 width: 200,
@@ -148,82 +169,23 @@ class _NfcScanneViewState extends State<NfcScanneView> {
                 const SizedBox(height: 30),
                 Text(_statusMessage, textAlign: TextAlign.center),
               ] else if (_nfcData != null) ...[
-                Text(_statusMessage, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                const SizedBox(height: 20),
-
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildInfoRow('Nom', _nfcData!['primaryIdentifier']),
-                        _buildInfoRow('Prénom', _nfcData!['secondaryIdentifier']),
-                        _buildInfoRow('Nom complet', _nfcData!['fullName']),
-                        _buildInfoRow('Nationalité', _nfcData!['nationality']),
-                        _buildInfoRow('Date de naissance', _nfcData!['dateOfBirth']),
-                        _buildInfoRow('Genre', _nfcData!['gender']),
-                        _buildInfoRow('Date d’expiration', _nfcData!['dateOfExpiry']),
-                        _buildInfoRow('Numéro de document', _nfcData!['documentNumber']),
-                      ],
-                    ),
-                  ),
-                ),
-
                 if (_faceImage != null) ...[
-                  const SizedBox(height: 20),
-                  Text("Photo du visage :", style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 10),
-                  Center(
-                    child: ClipOval(
-                      child: Image.memory(
-                        _faceImage!,
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  const SizedBox(height: 240),
+
+                  CustomButton(
+                    text: 'Continuer',
+                    onPressed: () {
+                      Get.toNamed('/nextStep'); // Or whatever your next route is
+                    },
+                    color: const Color(0xFFE60000),
+                    textColor: Colors.white,
+                    width: double.infinity,
+                    height: 50,
+                    borderRadius: 8.0,
+                    fontSize: 16.0,
                   ),
                 ],
-
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Get.back(),
-                        child: const Text('Retour'),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // You can implement "Next step" here
-                          Get.snackbar('Info', 'Next step not implemented yet.');
-                        },
-                        child: const Text('Suivant'),
-                      ),
-                    ),
-                  ],
-                ),
-              ] else ...[
-                Text(_statusMessage, textAlign: TextAlign.center),
-                const SizedBox(height: 20),
-                CustomButton(
-                  text: 'Continuer',
-                  onPressed: () {
-
-                  },
-                  
-                  color: const Color(0xFFE60000),
-                  textColor: Colors.white,
-                  width: double.infinity,
-                  height: 50,
-                  borderRadius: 8.0,
-                  fontSize: 16.0,
-                ),
-                
-              ]
+              ],
             ],
           ),
         ),

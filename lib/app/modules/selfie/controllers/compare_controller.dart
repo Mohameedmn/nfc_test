@@ -17,9 +17,11 @@ class FaceCompareController extends GetxController {
 
   var isLoading = false.obs;
   var matchResult = RxnBool();
+//stepper controller
 
-  final SelfieCNIController cniController = Get.find();
+  final steppercontroller cniController = Get.find();
   final SelfieController faceIDController = Get.find();
+
 
   Future<void> compareVideoAndImage() async {
     isLoading.value = true;

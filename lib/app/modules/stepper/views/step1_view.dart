@@ -1,9 +1,9 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
 
-import 'nfc_scanne.dart';  // Import the NFC scanner screen
+import 'nfc_scanne.dart';
 
 class Step1View extends StatefulWidget {
   const Step1View({Key? key}) : super(key: key);
@@ -13,16 +13,35 @@ class Step1View extends StatefulWidget {
 }
 
 class _Step1ViewState extends State<Step1View> {
-  static const platform = MethodChannel('com.example.nfcreaderapp/passport_reader');
+  static const platform =
+      MethodChannel('com.example.nfcreaderapp/passport_reader');
 
   String _statusMessage = 'Scan result will appear here';
   String? _documentNumber;
   String? _dateOfBirth;
   String? _expirationDate;
 
+  CameraController? _cameraController;
+  bool _isCameraInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
+    await _cameraController!.initialize();
+    setState(() {
+      _isCameraInitialized = true;
+    });
+  }
+
   Future<void> _startMRZScan() async {
     setState(() {
-      _statusMessage = "Starting MRZ scan...";
+      _statusMessage = "🔍 Starting MRZ scan...";
     });
 
     try {
@@ -36,20 +55,20 @@ class _Step1ViewState extends State<Step1View> {
         setState(() {
           _statusMessage = '''
 ✅ MRZ Read Successfully:
-Document Number: $_documentNumber
-Date of Birth: $_dateOfBirth
-Expiry Date: $_expirationDate
 
-📲 Now hold the passport to the back of your phone for NFC...
+📄 Document Number: $_documentNumber
+🎂 Date of Birth: $_dateOfBirth
+📅 Expiry Date: $_expirationDate
+
+📲 Hold the passport to the back of your phone for NFC...
 ''';
         });
 
-        // Navigate to the NFC scan screen and start NFC read
         Get.to(() => NfcScanneView(
-          documentNumber: _documentNumber!,
-          dateOfBirth: _dateOfBirth!,
-          expirationDate: _expirationDate!,
-        ));
+              documentNumber: _documentNumber!,
+              dateOfBirth: _dateOfBirth!,
+              expirationDate: _expirationDate!,
+            ));
       } else if (result == "REQUESTING_PERMISSIONS") {
         setState(() {
           _statusMessage = "📋 Permissions requested. Please try again.";
@@ -73,20 +92,77 @@ Expiry Date: $_expirationDate
   }
 
   @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Step 1 - MRZ + NFC")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: _startMRZScan,
-              child: const Text('Start MRZ Scan'),
-            ),
-            const SizedBox(height: 20),
-            Expanded(child: SingleChildScrollView(child: SelectableText(_statusMessage))),
-          ],
+      appBar: AppBar(
+        title: const Text("Step 1 - MRZ + NFC"),
+        backgroundColor: Colors.teal,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _isCameraInitialized && _cameraController != null
+                  ? Builder(
+                      builder: (_) {
+                        final aspectRatio =
+                            _cameraController!.value.aspectRatio;
+                        if (aspectRatio > 0) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: AspectRatio(
+                              aspectRatio: aspectRatio,
+                              child: CameraPreview(_cameraController!),
+                            ),
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  : const Center(child: CircularProgressIndicator()),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: _startMRZScan,
+                icon: const Icon(Icons.document_scanner),
+                label: const Text("Start MRZ Scan"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  color: Colors.grey[100],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: SelectableText(
+                        _statusMessage,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
