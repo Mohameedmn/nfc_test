@@ -1,12 +1,11 @@
-/*import 'package:firstgetxapp/app/widgets/StepProgressBar.dart';
+import 'package:firstgetxapp/app/widgets/StepProgressBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/stepper_controller.dart';
 import 'package:firstgetxapp/app/widgets/step_content_widget.dart';
-import 'package:lottie/lottie.dart';
 
-class Step1View extends GetView<StepperController> {
-  const Step1View({super.key});
+class Originalstep1 extends GetView<StepperController> {
+  const Originalstep1({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class Step1View extends GetView<StepperController> {
                   'Please scan your National Identity Card. Make sure it s clear and all corners are visible.',
                   buttonText: 'Scan CNI',
                   onPressed: () {
-                    Get.toNamed('/selfie-CNI');
+                    Get.toNamed('/step1');
 
                   },
                 ),
@@ -40,4 +39,3 @@ class Step1View extends GetView<StepperController> {
     );
   }
 }
-*/

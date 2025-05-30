@@ -1,45 +1,53 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
+import 'package:firstgetxapp/app/modules/selfie/controllers/selfie_faceID.dart';
+import 'package:firstgetxapp/app/modules/stepper/controllers/stepper_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 
 class UploadScreen extends StatelessWidget {
-  const UploadScreen({super.key});
+  UploadScreen({super.key});
 
-  // Helper to load asset and write it to a temporary file
-  Future<File> getAssetFile(String assetPath, String filename) async {
-    final byteData = await rootBundle.load(assetPath);
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/$filename');
-    await file.writeAsBytes(byteData.buffer.asUint8List());
-    return file;
-  }
+  final StepperController _stepperController = Get.find<StepperController>();
+  final SelfieFaceIDController _selfieController = Get.find<SelfieFaceIDController>();
+
 
   Future<void> sendImageAndVideo() async {
     final uri = Uri.parse('http://192.168.1.71:5000/verify');
 
     try {
-      // Copy image and video assets to temporary files
-      final imageFile = await getAssetFile(
-          'assets/images/test/phototest.jpg', 'phototest.jpg');
-      final videoFile = await getAssetFile(
-          'assets/images/test/videotest.mp4', 'videotest.mp4');
+      Uint8List? faceImage = _stepperController.faceImage.value;
+      if (faceImage == null) {
+        print("❌ No face image to upload");
+        return;
+      }
 
-      // Create multipart request
+      XFile? video = _selfieController.recordedVideo.value;
+
+if (video == null) {
+  print("❌ No recorded video found");
+  return;
+}
+
+File videoFile = File(video.path);
+
       var request = http.MultipartRequest('POST', uri);
 
-      // Add image
+      // Add face image from bytes
       request.files.add(
-        await http.MultipartFile.fromPath(
-          'photo_nfc',
-          imageFile.path,
+        http.MultipartFile.fromBytes(
+          'photo_nfc', 
+          faceImage,
+          filename: 'photo_nfc.jpg',  // Important to give a filename and extension
           contentType: MediaType('image', 'jpeg'),
         ),
       );
 
-      // Add video
+      // Add video from file path
       request.files.add(
         await http.MultipartFile.fromPath(
           'video_face',
@@ -48,18 +56,31 @@ class UploadScreen extends StatelessWidget {
         ),
       );
 
-      // Send request
       var response = await request.send();
 
       if (response.statusCode == 200) {
         final respStr = await response.stream.bytesToString();
         print("✅ Success: $respStr");
+        // go to step
+
+        Get.toNamed('/succes');
       } else {
         print("❌ Failed with status: ${response.statusCode}");
+
+        Get.toNamed('/failure');
       }
     } catch (e) {
       print("⚠️ Error: $e");
     }
+  }
+
+  // Same helper method from your example to copy video asset to file
+  Future<File> getAssetFile(String assetPath, String filename) async {
+    final byteData = await rootBundle.load(assetPath);
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/$filename');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return file;
   }
 
   @override
@@ -69,7 +90,7 @@ class UploadScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: sendImageAndVideo,
-          child: const Text("Send Image & Video"),
+          child: const Text("Send NFC Image & Video"),
         ),
       ),
     );

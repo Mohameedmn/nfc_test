@@ -1,4 +1,5 @@
-/*import 'package:flutter/material.dart';
+import 'package:firstgetxapp/app/widgets/identitymatched.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/stepper_controller.dart';
 import '../../../widgets/custombutton.dart';
@@ -49,6 +50,7 @@ class SuccesView extends GetView<StepperController> {
               CustomButton(
                 text: "Continuer",
                 onPressed: () {
+                  
                   // Get.toNamed(''); // Replace with your next step route
                 },
                 // color E60000
@@ -66,4 +68,4 @@ class SuccesView extends GetView<StepperController> {
     );
   }
 }
-*/
+

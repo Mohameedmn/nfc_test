@@ -1,17 +1,16 @@
 import 'package:firstgetxapp/app/modules/Purchase_request/bindings/Purchase_request_binding.dart';
 import 'package:firstgetxapp/app/modules/Purchase_request/view/Purchqse_request_view.dart';
-import 'package:firstgetxapp/app/modules/help/bindings/help_bindings.dart';
-import 'package:firstgetxapp/app/modules/help/view/help_view.dart';
 import 'package:firstgetxapp/app/modules/home/bindings/main_bindings.dart';
 import 'package:firstgetxapp/app/modules/home/views/MainView.dart';
 import 'package:firstgetxapp/app/modules/infos/bindings/infos_binding.dart';
 import 'package:firstgetxapp/app/modules/infos/views/infos_view.dart';
-import 'package:firstgetxapp/app/modules/selfie/bindings/faceCompare_binding.dart';
-import 'package:firstgetxapp/app/modules/selfie/bindings/selfie_CNI_binding.dart';
 import 'package:firstgetxapp/app/modules/selfie/bindings/selfie_FACEIDB_binding.dart';
 import 'package:firstgetxapp/app/modules/selfie/views/compare_view.dart';
-import 'package:firstgetxapp/app/modules/selfie/views/testView.dart';
+import 'package:firstgetxapp/app/modules/selfie/views/faceID_view1.dart';
+import 'package:firstgetxapp/app/modules/stepper/views/OriginalStep1.dart';
+import 'package:firstgetxapp/app/modules/stepper/views/failure.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/recap.dart';
+import 'package:firstgetxapp/app/modules/stepper/views/succes.dart';
 import 'package:get/get.dart';
 import 'package:firstgetxapp/app/modules/home/bindings/home_binding.dart';
 import 'package:firstgetxapp/app/modules/home/views/home_view.dart';
@@ -21,7 +20,6 @@ import 'package:firstgetxapp/app/modules/stepper/views/step2_view.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/step3_view.dart';
 import 'package:firstgetxapp/app/modules/forfait/bindings/forfait_binding.dart';
 import 'package:firstgetxapp/app/modules/forfait/views/forfait_view.dart';
-import 'package:firstgetxapp/app/modules/selfie/views/CNI_view1.dart';
 import 'package:firstgetxapp/app/modules/passwordrecovery/bindings/passwordrecoverybinding.dart';
 import 'package:firstgetxapp/app/modules/passwordrecovery/views/passwordrecoveryview1.dart';
 import 'package:firstgetxapp/app/modules/register/bindings/registerbinding.dart';
@@ -29,13 +27,10 @@ import 'package:firstgetxapp/app/modules/register/views/registerpage.dart';
 import 'package:firstgetxapp/app/modules/welcome/bindings/welcomebinding.dart';
 import 'package:firstgetxapp/app/modules/welcome/views/welcomeview.dart';
 import 'package:firstgetxapp/app/modules/login/bindings/loginbinding.dart';
-import 'package:firstgetxapp/app/modules/login/views/loginpage.dart'; // Make sure to import your LoginView
-import 'package:firstgetxapp/app/routes/app_routes.dart'; // Import your routes file// Import your routes file
+import 'package:firstgetxapp/app/modules/login/views/loginpage.dart'; 
+import 'package:firstgetxapp/app/routes/app_routes.dart'; 
 
 
-import 'package:firstgetxapp/app/modules/stepper/views/step1mrz.dart';
-import 'package:firstgetxapp/app/modules/stepper/views/step2nfc.dart';
-// Make sure to import your LoginView
 
 class AppPages {
   static const INITIAL = Routes.step1; // Define the initial route
@@ -44,14 +39,21 @@ class AppPages {
 
     GetPage(
       name: Routes.MAIN,
-      page: () => MainView(), // The view to display
-      binding: MainBinding(), // The binding to use for this route
+      page: () => MainView(), 
+      binding: MainBinding(), 
     ),
     GetPage(
       name: Routes.HOME,
       page: () => HomeView(), // The view to display
       binding: HomeBinding(), // The binding to use for this route
     ),
+
+    GetPage(
+      name: Routes.ORIGINAL_STEP1,
+      page: () =>  const Originalstep1() 
+    ),
+
+
     GetPage(
       name: Routes.step1,
       page: () => const Step1View(),
@@ -77,24 +79,42 @@ class AppPages {
       page: () => ForfaitView(),
       binding: ForfaitBinding(),
     ),
+    /*
     GetPage(
       name: Routes.selfie_CNI,
       page: () => const CniView1(),
       binding: SelfieCNIBinding(),
     ),
+    */
     
     GetPage(
       name: Routes.selfie_FACEID,
-      page: () => const testView1(),
+      page: () => const SelfieView1(),
       binding: SelfieFACEIDBinding(),
     ),
     
     
     GetPage(
       name: Routes.selfie_compare,
-      page: () => CompareView(),
-      binding: FaceCompareBinding(),
+      page: () => UploadScreen(),
     ),
+
+
+    GetPage(
+      name: Routes.SUCCES,
+      page: () => SuccesView(),
+    ),
+
+      //FailureView
+
+      GetPage(
+      name: Routes.FAILURE,
+      page: () => FailureView(),
+    ),
+
+
+
+    
     
     GetPage(
       name: Routes
@@ -136,14 +156,7 @@ class AppPages {
     ),
     */
 
-    GetPage(
-      name: '/step1mrz',
-      page: () => const Step1MRZView(),
-    ),
-    GetPage(
-      name: '/step2nfc',
-      page: () => const Step2NFCView(),
-    ),
+    
 
 
 

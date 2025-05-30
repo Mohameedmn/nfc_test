@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'custombutton.dart'; // adjust the import if needed
+import 'package:lottie/lottie.dart';
+import 'custombutton.dart'; // adjust if needed
 
 class StepContentWidget extends StatelessWidget {
   final String imagePath;
@@ -7,6 +8,7 @@ class StepContentWidget extends StatelessWidget {
   final String description;
   final String buttonText;
   final VoidCallback onPressed;
+  final bool isLottie; // NEW
 
   const StepContentWidget({
     super.key,
@@ -15,6 +17,7 @@ class StepContentWidget extends StatelessWidget {
     required this.description,
     required this.buttonText,
     required this.onPressed,
+    this.isLottie = false, // NEW
   });
 
   @override
@@ -24,10 +27,15 @@ class StepContentWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            imagePath,
-            height: 300,
-          ),
+          isLottie
+              ? Lottie.asset(
+                  imagePath,
+                  height: 300,
+                )
+              : Image.asset(
+                  imagePath,
+                  height: 300,
+                ),
           const SizedBox(height: 30),
           Text(
             title,
@@ -46,7 +54,6 @@ class StepContentWidget extends StatelessWidget {
             onPressed: onPressed,
             color: Colors.red,
           ),
-          
         ],
       ),
     );

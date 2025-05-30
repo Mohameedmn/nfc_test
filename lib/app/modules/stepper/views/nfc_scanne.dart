@@ -119,6 +119,7 @@ class _NfcScanneViewState extends State<NfcScanneView> {
     }
   }
 
+
   Widget _buildInfoRow(String label, dynamic value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -174,8 +175,10 @@ class _NfcScanneViewState extends State<NfcScanneView> {
 
                   CustomButton(
                     text: 'Continuer',
+                    
                     onPressed: () {
-                      Get.toNamed('/nextStep'); // Or whatever your next route is
+                      print("NFC Data: $_nfcData");
+                      Get.toNamed('/step2'); // Or whatever your next route is
                     },
                     color: const Color(0xFFE60000),
                     textColor: Colors.white,

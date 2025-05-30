@@ -14,40 +14,61 @@ class SelfieFaceIDController extends GetxController {
   }
 
   Future<void> initCamera() async {
-    final cameras = await availableCameras();
-    final frontCamera = cameras.firstWhere(
-      (camera) => camera.lensDirection == CameraLensDirection.front,
-      orElse: () => throw Exception('Front camera not found'),
-    );
+    try {
+      final cameras = await availableCameras();
+      final frontCamera = cameras.firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.front,
+        orElse: () => throw Exception('Front camera not found'),
+      );
 
-    cameraController = CameraController(
-      frontCamera,
-      ResolutionPreset.high,
-      enableAudio: true,
-    );
+      cameraController = CameraController(
+        frontCamera,
+        ResolutionPreset.high,
+        enableAudio: true,
+      );
 
-    await cameraController.initialize();
-    isCameraInitialized.value = true;
+      await cameraController.initialize();
+      isCameraInitialized.value = true;
+    } catch (e) {
+      print('Camera initialization failed: $e');
+    }
   }
 
   Future<void> startRecording() async {
-    if (!cameraController.value.isRecordingVideo) {
-      await cameraController.startVideoRecording();
-      isRecording.value = true;
+    if (!isCameraInitialized.value) return;
+
+    try {
+      if (!cameraController.value.isRecordingVideo) {
+        await cameraController.startVideoRecording();
+        isRecording.value = true;
+
+        // Automatically stop after 5 seconds
+        Future.delayed(const Duration(seconds: 5), () async {
+          await stopRecording();
+        });
+      }
+    } catch (e) {
+      print('Start recording failed: $e');
     }
   }
 
   Future<void> stopRecording() async {
-    if (cameraController.value.isRecordingVideo) {
-      final video = await cameraController.stopVideoRecording();
-      recordedVideo.value = video;
-      isRecording.value = false;
+    try {
+      if (cameraController.value.isRecordingVideo) {
+        final video = await cameraController.stopVideoRecording();
+        recordedVideo.value = video;
+        isRecording.value = false;
+      }
+    } catch (e) {
+      print('Stop recording failed: $e');
     }
   }
 
   @override
   void onClose() {
-    cameraController.dispose();
+    if (cameraController.value.isInitialized) {
+      cameraController.dispose();
+    }
     super.onClose();
   }
 }

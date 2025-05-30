@@ -105,7 +105,7 @@ class FailureView extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 46),
+              const SizedBox(height: 190),
               CustomButton(
                 text: "Quitter",
                 onPressed: () {},

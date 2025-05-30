@@ -53,3 +53,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/test/videotest.mp4
+    - assets/lottie/face_id.json
+    - assets/lottie/nfc_scan.json
+

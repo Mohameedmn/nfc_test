@@ -38,7 +38,7 @@ class StepperAppBar extends StatelessWidget implements PreferredSizeWidget {
                     //margin: const EdgeInsets.only(left: 25),
                     margin: const EdgeInsets.symmetric(horizontal: 30),
                     child: LinearPercentIndicator(
-                      width: 300.0, // Set the width of the progress bar
+                      width: 270.0, // Set the width of the progress bar
                       lineHeight: 6.0, // Set the height of the progress bar
                       percent: currentStep.value /
                           totalSteps, // Calculate the progress based on current step
@@ -51,6 +51,7 @@ class StepperAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
+                
               ],
             ),
           )),

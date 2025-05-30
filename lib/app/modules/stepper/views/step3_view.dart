@@ -27,15 +27,19 @@ class Step3View extends GetView<StepperController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
 
         body:SafeArea(child:Column(
           children: [
             const SizedBox(height: 20),
+           
             StepperAppBar(
               steptitle: 'Step 3 of 3',
               currentStep: 3.obs,
               totalSteps: 3,
             ),
+
+            
             const SizedBox(height: 30),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
