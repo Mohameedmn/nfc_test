@@ -33,7 +33,7 @@ import 'package:firstgetxapp/app/routes/app_routes.dart';
 
 
 class AppPages {
-  static const INITIAL = Routes.step1; // Define the initial route
+  static const INITIAL = Routes.ORIGINAL_STEP1; // Define the initial route
 
   static final routes = [
 
@@ -103,6 +103,7 @@ class AppPages {
     GetPage(
       name: Routes.SUCCES,
       page: () => SuccesView(),
+      binding: StepperBinding(), // Ensure you have the correct binding for this view
     ),
 
       //FailureView
@@ -111,6 +112,8 @@ class AppPages {
       name: Routes.FAILURE,
       page: () => FailureView(),
     ),
+
+    
 
 
 

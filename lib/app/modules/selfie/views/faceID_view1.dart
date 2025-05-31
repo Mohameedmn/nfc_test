@@ -105,7 +105,7 @@ class SelfieView1 extends GetView<SelfieFaceIDController> {
                           backgroundColor: Colors.green,
                           colorText: Colors.white,
                         );
-                       Get.toNamed('/step3');
+                       Get.offNamed('/step3');
                       }                 
                    },
                   ),

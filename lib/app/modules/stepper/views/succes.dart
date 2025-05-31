@@ -1,3 +1,4 @@
+import 'package:firstgetxapp/app/modules/stepper/controllers/request_Controller.dart';
 import 'package:firstgetxapp/app/widgets/identitymatched.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,10 @@ class SuccesView extends GetView<StepperController> {
 
   @override
   Widget build(BuildContext context) {
+    // Inject the RequestController
+    final requestController = Get.put(RequestController());
+    
+
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
@@ -36,11 +41,8 @@ class SuccesView extends GetView<StepperController> {
                 ),
               ),
               const SizedBox(height: 40),
-
               IdentityMatchCard(),
-
               const SizedBox(height: 30),
-
               const Text(
                 "Vous pouvez maintenant passer à l'étape suivante.",
                 textAlign: TextAlign.center,
@@ -50,10 +52,9 @@ class SuccesView extends GetView<StepperController> {
               CustomButton(
                 text: "Continuer",
                 onPressed: () {
-                  
-                  // Get.toNamed(''); // Replace with your next step route
+                  requestController.sendUserData();
+                  print("hhhhh");
                 },
-                // color E60000
                 color: const Color(0xFFE60000),
                 textColor: Colors.white,
                 width: double.infinity,
@@ -68,4 +69,3 @@ class SuccesView extends GetView<StepperController> {
     );
   }
 }
-

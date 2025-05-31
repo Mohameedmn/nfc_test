@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:firstgetxapp/app/core/utils/api/api_config.dart';
 import 'package:firstgetxapp/app/modules/selfie/controllers/selfie_faceID.dart';
 import 'package:firstgetxapp/app/modules/stepper/controllers/stepper_controller.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,11 @@ class UploadScreen extends StatelessWidget {
   final SelfieFaceIDController _selfieController = Get.find<SelfieFaceIDController>();
 
 
+
   Future<void> sendImageAndVideo() async {
-    final uri = Uri.parse('http://192.168.1.71:5000/verify');
+    //final uri = Uri.parse('http://172.20.10.2:5000/verify');
+
+    final uri = Uri.parse('${ApiConfig.face_id_url}');
 
     try {
       Uint8List? faceImage = _stepperController.faceImage.value;

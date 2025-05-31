@@ -1,9 +1,9 @@
+import 'package:firstgetxapp/app/modules/stepper/views/nfcscanne_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 
-import 'nfc_scanne.dart';
 
 class Step1View extends StatefulWidget {
   const Step1View({Key? key}) : super(key: key);
