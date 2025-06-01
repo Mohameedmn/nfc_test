@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
 
 class NfcScanneController extends GetxController {
   static const platform = MethodChannel('com.example.nfcreaderapp/passport_reader');
 
   String statusMessage = "Placez votre carte d'identité biométrique au dos de votre téléphone pour lire les données NFC.";
-  Uint8List? faceImage;
+  var faceImage = Rxn<Uint8List>();  // <-- Observable nullable Uint8List
   Map<String, dynamic>? nfcData;
   bool isReading = false;
 
@@ -40,8 +40,6 @@ class NfcScanneController extends GetxController {
               ? (genderRaw is String ? genderRaw : genderRaw.toString().split('.').last)
               : "N/A";
 
-            
-
           Uint8List? image;
           if (rawNfcData['faceImage'] != null && rawNfcData['faceImage'] is List<dynamic>) {
             image = Uint8List.fromList((rawNfcData['faceImage'] as List).cast<int>());
@@ -49,11 +47,11 @@ class NfcScanneController extends GetxController {
 
           if (image != null) {
             nfcData = rawNfcData;
-            faceImage = image;
+            faceImage.value = image;  // <-- Set reactive value here
             statusMessage = "✅ Lecture NFC réussie !";
             isReading = false;
             onUpdate();
-            onSuccess(nfcData!, faceImage!);
+            onSuccess(nfcData!, faceImage.value!);
             success = true;
             break;
           } else {

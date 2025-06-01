@@ -97,6 +97,7 @@ class AppPages {
     GetPage(
       name: Routes.selfie_compare,
       page: () => UploadScreen(),
+      binding: StepperBinding(), 
     ),
 
 

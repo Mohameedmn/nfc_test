@@ -1,4 +1,5 @@
 import 'package:firstgetxapp/app/modules/profil/controller/profile_controller.dart';
+import 'package:firstgetxapp/app/modules/selfie/controllers/selfie_faceID.dart';
 import 'package:firstgetxapp/app/modules/subscriber/controller/subscriber_controller.dart';
 import 'package:get/get.dart';
 import '../controllers/stepper_controller.dart';
@@ -13,6 +14,7 @@ class StepperBinding extends Bindings {
      Get.lazyPut<RequestController>(() => RequestController());
      Get.lazyPut<NfcScanneController>(() => NfcScanneController());
      Get.lazyPut<SubscriberController>(() => SubscriberController());
+    Get.lazyPut<SelfieFaceIDController>(() => SelfieFaceIDController());
 
   }
 }
