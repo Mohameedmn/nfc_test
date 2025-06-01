@@ -21,7 +21,7 @@ class UploadScreen extends StatelessWidget {
   Future<void> sendImageAndVideo() async {
     //final uri = Uri.parse('http://172.20.10.2:5000/verify');
 
-    final uri = Uri.parse('${ApiConfig.face_id_url}');
+    final uri = Uri.parse(ApiConfig.face_id_url);
 
     try {
       Uint8List? faceImage = _stepperController.faceImage.value;

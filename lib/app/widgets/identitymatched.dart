@@ -6,14 +6,14 @@ class IdentityMatchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(5),
       width: double.infinity,
       height: 300,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -29,15 +29,15 @@ class IdentityMatchCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _iconWithLabel(Icons.credit_card, "CNI"),
-              SizedBox(width: 60),
-              Text("=", style: TextStyle(fontSize: 24, color: Colors.red)),
-              SizedBox(width: 60),
+              const SizedBox(width: 60),
+              const Text("=", style: TextStyle(fontSize: 24, color: Colors.red)),
+              const SizedBox(width: 60),
               _iconWithLabel(Icons.person, "Photo"),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           // Confirmation Row
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.check_circle, color: Colors.green),
@@ -51,15 +51,15 @@ class IdentityMatchCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           // Security Notice
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Color(0xFFF4F4F4),
+              color: const Color(0xFFF4F4F4),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.lock_outline, color: Colors.red, size: 18),
@@ -80,15 +80,15 @@ class IdentityMatchCard extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Color(0xFFF0F0F0),
+            color: const Color(0xFFF0F0F0),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 36, color: Colors.black54),
         ),
-        SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 14)),
+        const SizedBox(height: 8),
+        Text(label, style: const TextStyle(fontSize: 14)),
       ],
     );
   }

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:firstgetxapp/app/modules/stepper/controllers/nfcscanne_controller.dart';
 import 'package:firstgetxapp/app/modules/stepper/views/succes.dart';
 import 'package:firstgetxapp/app/widgets/custombutton.dart';
@@ -12,11 +11,11 @@ class NfcScanneView extends StatefulWidget {
   final String expirationDate;
 
   const NfcScanneView({
-    Key? key,
+    super.key,
     required this.documentNumber,
     required this.dateOfBirth,
     required this.expirationDate,
-  }) : super(key: key);
+  });
 
   @override
   State<NfcScanneView> createState() => _NfcScanneViewState();

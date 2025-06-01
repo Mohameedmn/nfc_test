@@ -90,7 +90,7 @@ class SelfieView1 extends GetView<SelfieFaceIDController> {
                     text: "Continuer",
                     width: double.infinity,
                     height: 50,
-                    color: Color(0xFF059669),
+                    color: const Color(0xFF059669),
                     textColor: Colors.white,
                     borderRadius: 8.0,
                     fontSize: 16.0,

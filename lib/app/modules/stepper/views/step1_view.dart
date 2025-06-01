@@ -6,7 +6,7 @@ import 'package:camera/camera.dart';
 
 
 class Step1View extends StatefulWidget {
-  const Step1View({Key? key}) : super(key: key);
+  const Step1View({super.key});
 
   @override
   State<Step1View> createState() => _Step1ViewState();

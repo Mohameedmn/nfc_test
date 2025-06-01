@@ -41,7 +41,7 @@ class SuccesView extends GetView<StepperController> {
                 ),
               ),
               const SizedBox(height: 40),
-              IdentityMatchCard(),
+              const IdentityMatchCard(),
               const SizedBox(height: 30),
               const Text(
                 "Vous pouvez maintenant passer à l'étape suivante.",

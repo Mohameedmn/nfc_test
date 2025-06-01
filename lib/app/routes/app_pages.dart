@@ -111,7 +111,7 @@ class AppPages {
 
       GetPage(
       name: Routes.FAILURE,
-      page: () => FailureView(),
+      page: () => const FailureView(),
     ),
 
     
