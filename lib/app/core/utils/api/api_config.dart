@@ -1,8 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiConfig {
-  static const String baseUrl = 'http://192.168.1.71:8000/api'; 
-  static const String face_id_url ='http://192.168.1.71:5000/verify';
+  static const String baseUrl = 'http://192.168.1.35:8000/api'; 
+  static const String face_id_url ='http://192.168.1.35:5001/verify';
   static const FlutterSecureStorage storage = FlutterSecureStorage();
 
   static Future<Map<String, String>> getHeaders({bool withAuth = true}) async {

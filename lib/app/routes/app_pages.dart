@@ -33,7 +33,7 @@ import 'package:firstgetxapp/app/routes/app_routes.dart';
 
 
 class AppPages {
-  static const INITIAL = Routes.ORIGINAL_STEP1; // Define the initial route
+  static const INITIAL = Routes.LOGIN; // Define the initial route
 
   static final routes = [
 
@@ -97,12 +97,13 @@ class AppPages {
     GetPage(
       name: Routes.selfie_compare,
       page: () => UploadScreen(),
+      binding: SelfieFACEIDBinding(),
     ),
 
 
     GetPage(
       name: Routes.SUCCES,
-      page: () => SuccesView(),
+      page: () => const SuccesView(),
       binding: StepperBinding(), // Ensure you have the correct binding for this view
     ),
 

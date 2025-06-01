@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:firstgetxapp/app/modules/stepper/controllers/nfcscanne_controller.dart';
+import 'package:firstgetxapp/app/modules/stepper/views/succes.dart';
 import 'package:firstgetxapp/app/widgets/custombutton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class NfcScanneView extends StatefulWidget {
 }
 
 class _NfcScanneViewState extends State<NfcScanneView> {
-  final StepperController _stepperController = Get.find<StepperController>();
+  final StepperController _stepperController = StepperController();
 
   final NfcScanneController _controller = NfcScanneController();
 
@@ -94,7 +95,7 @@ class _NfcScanneViewState extends State<NfcScanneView> {
                     onPressed: () {
                       print("NFC Data: ${_controller.nfcData}");
                       
-                      Get.offNamed('/step2');
+                      Get.to(const SuccesView());
 
                     },
                     color: const Color(0xFFE60000),
